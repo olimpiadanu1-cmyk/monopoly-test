@@ -1,0 +1,28 @@
+[
+  {
+    "id": 1,
+    "isAdmin": true,
+    "nick": "admin",
+    "password": "admin123",
+    "points": 1150,
+    "registeredAt": "2025-10-02T12:51:40.096Z",
+    "vk": "https://vk.com/admin"
+  },
+  {
+    "id": 1759409528001,
+    "isAdmin": false,
+    "nick": "12312311",
+    "password": "123123",
+    "points": 327,
+    "registeredAt": "2025-10-02T12:52:08.001Z",
+    "vk": "123123"
+  },
+  {
+    "id": 1759413016267,
+    "isAdmin": false,
+    "nick": "11",
+    "password": "123123",
+    "registeredAt": "2025-10-02T13:50:16.267Z",
+    "vk": "11"
+  }
+]
