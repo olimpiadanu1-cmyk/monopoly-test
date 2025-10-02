@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "nick": "admin",
+    "password": "admin",
+    "points": 1000,
+    "role": "admin",
+    "banned": false,
+    "registeredAt": "2025-10-02T10:00:00.000Z"
+  },
+  {
+    "id": 2, 
+    "nick": "testuser",
+    "password": "test",
+    "points": 100,
+    "role": "player",
+    "banned": false,
+    "registeredAt": "2025-10-02T11:00:00.000Z"
+  }
+]

@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1759409477107,
+    "reviewComment": null,
+    "reviewedAt": "2025-10-02T12:51:21.089Z",
+    "reviewedBy": "admin",
+    "screenshots": [
+      {
+        "fileName": "Без имени.png",
+        "id": 1759409474579.1409,
+        "url": "blob:http://localhost:3000/7040e7da-ab74-44dd-bbad-6ad24b3889a5"
+      }
+    ],
+    "status": "approved",
+    "submittedAt": "2025-10-02T12:51:17.107Z",
+    "taskDescription": "Задание для клетки 2. Здесь будет ваше задание...",
+    "taskNumber": 2,
+    "userId": 1,
+    "userNick": "admin",
+    "userVK": "https://vk.com/admin"
+  },
+  {
+    "id": 1759410789634,
+    "reviewComment": null,
+    "reviewedAt": "2025-10-02T13:13:59.872Z",
+    "reviewedBy": "admin",
+    "screenshots": [
+      {
+        "fileName": "Без имени.png",
+        "id": 1759410788187.0579,
+        "url": "blob:http://localhost:3000/1af7c3ad-d029-4eea-9357-fca2a846e694"
+      }
+    ],
+    "status": "approved",
+    "submittedAt": "2025-10-02T13:13:09.634Z",
+    "taskDescription": "Задание для клетки 2. Здесь будет ваше задание...",
+    "taskNumber": 2,
+    "userId": 1,
+    "userNick": "admin",
+    "userVK": "https://vk.com/admin"
+  },
+  {
+    "id": 1759411350175,
+    "reviewComment": null,
+    "reviewedAt": "2025-10-02T13:22:50.726Z",
+    "reviewedBy": "admin",
+    "screenshots": [
+      {
+        "fileName": "Без имени.png",
+        "id": 1759411349139.7983,
+        "url": "blob:http://localhost:3000/e0c826a3-26bb-4155-8783-2d932b2fb062"
+      }
+    ],
+    "status": "approved",
+    "submittedAt": "2025-10-02T13:22:30.175Z",
+    "taskDescription": "Задание для клетки 2. Здесь будет ваше задание...",
+    "taskNumber": 2,
+    "userId": 1,
+    "userNick": "admin",
+    "userVK": "https://vk.com/admin"
+  },
+  {
+    "id": 1759412871070,
+    "reviewComment": null,
+    "reviewedAt": "2025-10-02T13:48:27.340Z",
+    "reviewedBy": "admin",
+    "screenshots": [
+      {
+        "fileName": "Без имени.png",
+        "id": 1759412869924.7742,
+        "url": "blob:http://localhost:3000/b87b2747-9fb3-40e3-8692-4e9744d5d52e"
+      }
+    ],
+    "status": "approved",
+    "submittedAt": "2025-10-02T13:47:51.070Z",
+    "taskDescription": "Задание для клетки 11. Здесь будет ваше задание...",
+    "taskNumber": 11,
+    "userId": 1759409528001,
+    "userNick": "12312311",
+    "userVK": "123123"
+  }
+]

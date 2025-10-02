@@ -1,0 +1,18 @@
+{
+  "1": {
+    "completed": false,
+    "completedGames": {},
+    "moves": 36,
+    "points": 1150,
+    "position": 9,
+    "userId": 1
+  },
+  "1759409528001": {
+    "position": 11,
+    "moves": 25,
+    "points": 340,
+    "completed": false,
+    "completedGames": {},
+    "userId": 1759409528001
+  }
+}
