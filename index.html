@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Монополия</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Экран загрузки -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-container">
+            <div class="loading-logo">
+                <div class="logo-icon">🎲</div>
+                <h1 class="logo-text">Монополия RAGE</h1>
+            </div>
+            
+            <div class="loading-spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+            </div>
+            
+            <div class="loading-text">
+                <p>Загрузка игры...</p>
+                <div class="loading-dots">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основной контент (скрыт во время загрузки) -->
+    <div id="main-content" class="main-content hidden">
+        
+    <!-- Страница входа/регистрации -->
+    <div id="auth-page" class="page">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>🎲 Монополия RAGE</h1>
+                <p>Добро пожаловать в игру!</p>
+            </div>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="showLogin()">Вход</button>
+                <button class="auth-tab" onclick="showRegister()">Регистрация</button>
+            </div>
+            
+            <!-- Форма входа -->
+            <div id="login-form" class="auth-form">
+                <h2>Вход в систему</h2>
+                <div class="form-group">
+                    <label for="login-nick">Игровой ник:</label>
+                    <input type="text" id="login-nick" placeholder="Введите ваш игровой ник">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Пароль:</label>
+                    <input type="password" id="login-password" placeholder="Введите пароль">
+                </div>
+                <button class="auth-btn" onclick="loginUser()">Войти</button>
+            </div>
+            
+            <!-- Форма регистрации -->
+            <div id="register-form" class="auth-form hidden">
+                <h2>Регистрация</h2>
+                <div class="form-group">
+                    <label for="reg-nick">Игровой ник:</label>
+                    <input type="text" id="reg-nick" placeholder="Введите игровой ник">
+                </div>
+                <div class="form-group">
+                    <label for="reg-vk">Ссылка на ВК:</label>
+                    <input type="url" id="reg-vk" placeholder="https://vk.com/ваш_профиль">
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Пароль:</label>
+                    <input type="password" id="reg-password" placeholder="Придумайте пароль">
+                </div>
+                <div class="form-group">
+                    <label for="reg-password-confirm">Подтвердите пароль:</label>
+                    <input type="password" id="reg-password-confirm" placeholder="Повторите пароль">
+                </div>
+                <button class="auth-btn" onclick="registerUser()">Подать заявку</button>
+                <p class="auth-note">После подачи заявки администрация рассмотрит её в течение 24 часов</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница Монополии -->
+    <div id="monopoly-page" class="page hidden">
+        <div class="top-section">
+            <div class="top-buttons">
+                <button class="main-button monopoly-btn active">Монополия</button>
+                <button class="main-button shop-btn" onclick="showAdminShop()">Админ магазин</button>
+                <button class="main-button admin-btn" onclick="showAdminPanel()">Админ панель</button>
+            </div>
+            <div class="points-display">
+                <div class="points-container">
+                    <span class="points-icon">💎</span>
+                    <span class="points-label">Очки:</span>
+                    <span class="points-value" id="player-points">0</span>
+                </div>
+                <button class="logout-btn" onclick="logoutUser()">Выйти</button>
+            </div>
+        </div>
+        
+        <div class="game-container">
+            <div class="game-left">
+                <div class="game-header">
+                    <div class="game-info">
+                        <div class="moves-counter">
+                            <span class="icon">🎲</span>
+                            <span>Доступно ходов: <span id="moves-count">15</span></span>
+                        </div>
+                        <div class="current-cell">
+                            <span class="icon">📍</span>
+                            <span>Текущая клетка: <span id="current-cell">Клетка 1 из 28</span></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="game-board">
+                    <!-- Игровое поле будет создано через JavaScript -->
+                    <div class="board-overlay-text">
+                        <div class="overlay-content">
+                            <div class="overlay-title">Выполняйте задания</div>
+                            <div class="overlay-subtitle">своего сектора</div>
+                            <div class="overlay-divider"></div>
+                            <div class="overlay-subtitle">Получайте призы на</div>
+                            <div class="overlay-subtitle">клетках 4, 7, 10, 13...</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Табличка завершения игры -->
+                    <div id="game-over-overlay" class="game-over-overlay hidden">
+                        <div class="game-over-content">
+                            <h1>🎉 КОНЕЦ 🎉</h1>
+                            <p>Поздравляем! Вы успешно прошли все испытания!</p>
+                            <p class="final-score">Финальный счет: <span id="final-score">0</span> очков</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="game-controls">
+                    <button class="control-btn move-btn" onclick="makeMove()">
+                        <span class="icon">🎯</span>
+                        Ход
+                    </button>
+                    <button class="control-btn task-btn" onclick="showTask()">
+                        <span class="task-number" id="task-number">1</span>
+                        Задание
+                    </button>
+                    <button class="control-btn explanation-btn" onclick="showExplanation()">
+                        <span class="icon">📖</span>
+                        Объяснение игры
+                    </button>
+                </div>
+            </div>
+            
+            <div class="game-right">
+                <div class="leaderboard">
+                    <h2>🏆 Топ-5 игроков</h2>
+                    <div class="leaderboard-subtitle">По ходам (месту на монополии)</div>
+                    <div class="leaderboard-list">
+                        <!-- Список игроков будет добавлен через JavaScript -->
+                    </div>
+                    <div class="player-status">
+                        <!-- Статус текущего игрока -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Админ панель -->
+    <div id="admin-page" class="page hidden">
+        <div class="admin-header">
+            <div class="admin-left-actions">
+                <button class="back-btn" onclick="showMonopolyGame()">← К игре</button>
+            </div>
+            <h1>👑 Админ панель</h1>
+                <div class="admin-right-actions">
+                    <button class="admin-action-btn" onclick="showTaskEditor()">
+                        <span class="btn-icon">📝</span>
+                        Редактировать задания
+                    </button>
+                    <!-- Кнопки экспорт/импорт убраны - данные автоматически сохраняются на сервере -->
+                    <button class="reset-players-btn" onclick="resetAllPlayersToStart()">
+                        <span class="btn-icon">🔄</span>
+                        Сбросить игроков
+                    </button>
+                    <button class="logout-btn" onclick="logoutUser()">Выйти</button>
+                </div>
+        </div>
+        
+        <!-- Скрытый input для импорта убран - данные автоматически загружаются с сервера -->
+        
+        <div class="admin-content admin-grid">
+            <div class="admin-column">
+                <div class="admin-section collapsible-section">
+                    <div class="section-header" onclick="toggleSection('applications')">
+                        <h2>📋 Заявки на регистрацию <span class="section-count" id="applications-count">(0)</span></h2>
+                        <div class="toggle-icon" id="applications-toggle">▼</div>
+                    </div>
+                    <div class="section-content" id="applications-content">
+                        <div class="applications-list" id="applications-list">
+                            <!-- Заявки будут добавлены через JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="admin-column">
+                <div class="admin-section collapsible-section">
+                    <div class="section-header" onclick="toggleSection('users')">
+                        <h2>👥 Зарегистрированные игроки <span class="section-count" id="users-count">(0)</span></h2>
+                        <div class="toggle-icon" id="users-toggle">▼</div>
+                    </div>
+                    <div class="section-content" id="users-content">
+                        <div class="users-list" id="users-list">
+                            <!-- Пользователи будут добавлены через JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="admin-column">
+                <div class="admin-section collapsible-section">
+                    <div class="section-header" onclick="toggleSection('purchases')">
+                        <h2>🛍️ Заявки на товары <span class="section-count" id="purchases-count">(0)</span></h2>
+                        <div class="toggle-icon" id="purchases-toggle">▼</div>
+                    </div>
+                    <div class="section-content" id="purchases-content">
+                        <div class="purchase-requests-list" id="purchase-requests-list">
+                            <!-- Заявки на товары будут добавлены через JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="admin-column">
+                <div class="admin-section collapsible-section">
+                    <div class="section-header" onclick="toggleSection('task-reviews')">
+                        <h2>📝 Проверка заданий <span class="section-count" id="task-reviews-count">(0)</span></h2>
+                        <div class="toggle-icon" id="task-reviews-toggle">▼</div>
+                    </div>
+                    <div class="section-content" id="task-reviews-content">
+                        <div class="task-reviews-list" id="task-reviews-list">
+                            <!-- Задания на проверку будут добавлены через JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="admin-column">
+                <div class="admin-section collapsible-section">
+                    <div class="section-header" onclick="toggleSection('rewards')">
+                        <h2>🎁 Выдача наград</h2>
+                        <div class="toggle-icon" id="rewards-toggle">▼</div>
+                    </div>
+                    <div class="section-content" id="rewards-content">
+                        <div class="rewards-panel">
+                            <div class="reward-form">
+                                <h3>🎫 Выдать билеты (ходы)</h3>
+                                <div class="form-group">
+                                    <label for="moves-nick">Ник игрока:</label>
+                                    <input type="text" id="moves-nick" placeholder="Введите ник игрока" list="players-list">
+                                    <datalist id="players-list">
+                                        <!-- Список игроков будет добавлен через JavaScript -->
+                                    </datalist>
+                                </div>
+                                <div class="form-group">
+                                    <label for="moves-amount">Количество билетов:</label>
+                                    <input type="number" id="moves-amount" placeholder="1" min="1" max="10" value="1">
+                                </div>
+                                <button class="reward-btn moves-btn" onclick="giveMoves()">
+                                    🎫 Выдать билеты
+                                </button>
+                            </div>
+                            
+                            <div class="reward-form">
+                                <h3>💰 Выдать очки</h3>
+                                <div class="form-group">
+                                    <label for="points-nick">Ник игрока:</label>
+                                    <input type="text" id="points-nick" placeholder="Введите ник игрока" list="players-list">
+                                </div>
+                                <div class="form-group">
+                                    <label for="points-amount">Количество очков:</label>
+                                    <input type="number" id="points-amount" placeholder="100" min="1" max="1000" value="100">
+                                </div>
+                                <button class="reward-btn points-btn" onclick="givePoints()">
+                                    💰 Выдать очки
+                                </button>
+                            </div>
+                            
+                            <div class="reward-history" id="reward-history">
+                                <h3>📜 История выдач</h3>
+                                <div class="history-list" id="history-list">
+                                    <!-- История будет добавлена через JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Админ магазин -->
+    <div id="admin-shop-page" class="page hidden">
+        <div class="admin-header">
+            <button class="back-btn" onclick="showMonopolyGame()">← К игре</button>
+            <h1 id="shop-title">🛒 Магазин</h1>
+            <button class="logout-btn" onclick="logoutUser()">Выйти</button>
+        </div>
+        
+        <div class="admin-content">
+            <div class="shop-header-actions">
+                <button class="cart-btn" onclick="showCart()" id="cart-btn">
+                    <span class="cart-icon">🛒</span>
+                    <span class="cart-text">Корзина</span>
+                    <span class="cart-count" id="cart-count">0</span>
+                </button>
+            </div>
+            
+            <div class="admin-section">
+                <h2>🛍️ Товары в магазине</h2>
+                <div class="shop-items" id="shop-items">
+                    <!-- Товары будут добавлены через JavaScript -->
+                </div>
+            </div>
+            
+            <div class="admin-section">
+                <h2>📦 Управление товарами</h2>
+                <div class="add-item-form">
+                    <div class="form-group">
+                        <label for="item-name">Название товара:</label>
+                        <input type="text" id="item-name" placeholder="Введите название товара">
+                    </div>
+                    <div class="form-group">
+                        <label for="item-price">Цена (в очках):</label>
+                        <input type="number" id="item-price" placeholder="Введите цену" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="item-description">Описание:</label>
+                        <textarea id="item-description" placeholder="Введите описание товара" rows="3"></textarea>
+                    </div>
+                    <button class="auth-btn" onclick="addShopItem()">Добавить товар</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно объяснения игры -->
+    <div id="explanation-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="hideExplanation()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Объяснение игры</h2>
+                <button class="modal-close" onclick="hideExplanation()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="explanation-text">
+                    <!-- Здесь будет текст объяснения игры -->
+                    <p>Здесь будет объяснение правил игры...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно задания -->
+    <div id="task-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="hideTask()"></div>
+        <div class="modal-content task-modal-content">
+            <div class="modal-header">
+                <h2>Задание для клетки <span id="task-cell-number">1</span></h2>
+                <button class="modal-close" onclick="hideTask()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="task-text">
+                    <!-- Здесь будет текст задания для текущей клетки -->
+                    <p id="task-description">Здесь будет задание для клетки <span id="task-cell-number-text">1</span>...</p>
+                </div>
+                
+                <!-- Зона загрузки скриншотов -->
+                <div class="screenshot-section">
+                    <h3>📸 Прикрепить скриншоты</h3>
+                    <div class="screenshot-upload-area">
+                        <input type="file" id="screenshot-input" multiple accept="image/*" style="display: none;">
+                        <div class="upload-zone" onclick="document.getElementById('screenshot-input').click()">
+                            <div class="upload-icon">📁</div>
+                            <div class="upload-text">Нажмите для выбора скриншотов</div>
+                            <div class="upload-hint">Максимум 5 изображений</div>
+                        </div>
+                        <div class="screenshots-preview" id="screenshots-preview"></div>
+                    </div>
+                </div>
+                
+                <!-- Кнопки действий -->
+                <div class="task-actions">
+                    <button class="task-modal-btn attach-btn" onclick="attachScreenshots()">
+                        📎 Прикрепить скриншоты
+                    </button>
+                    <button class="task-modal-btn submit-btn" onclick="submitTaskForReview()" disabled>
+                        📤 Отправить на проверку
+                    </button>
+                </div>
+                
+                <!-- Статус задания -->
+                <div class="task-status" id="task-status" style="display: none;">
+                    <div class="status-text" id="status-text"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно мини-игры стаканчики -->
+    <div id="cups-game-modal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content cups-modal">
+            <div class="modal-header">
+                <h2>🎉 Призовая мини-игра!</h2>
+            </div>
+            <div class="modal-body">
+                <div class="cups-game">
+                    <div class="game-instruction">
+                        <p>Выберите стаканчик и получите приз!</p>
+                    </div>
+                    
+                    <div class="cups-container" id="cups-container">
+                        <div class="cup" data-cup="0" onclick="selectCup(0)">
+                            <div class="cup-visual">🥤</div>
+                            <div class="prize hidden" id="prize-0"></div>
+                        </div>
+                        <div class="cup" data-cup="1" onclick="selectCup(1)">
+                            <div class="cup-visual">🥤</div>
+                            <div class="prize hidden" id="prize-1"></div>
+                        </div>
+                        <div class="cup" data-cup="2" onclick="selectCup(2)">
+                            <div class="cup-visual">🥤</div>
+                            <div class="prize hidden" id="prize-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="game-status" id="game-status">
+                        Нажмите "Показать призы" чтобы начать!
+                    </div>
+                    
+                    <div class="game-controls-cups">
+                        <button class="cups-btn" id="show-prizes-btn" onclick="showPrizes()">Показать призы</button>
+                        <button class="cups-btn hidden" id="shuffle-btn" onclick="shuffleCups()">Перемешать</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно подтверждения покупки -->
+    <div id="purchase-confirm-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="hidePurchaseConfirm()"></div>
+        <div class="modal-content purchase-confirm-content">
+            <div class="modal-header purchase-confirm-header">
+                <h2>🛒 Подтверждение покупки</h2>
+                <button class="modal-close" onclick="hidePurchaseConfirm()">×</button>
+            </div>
+            <div class="modal-body purchase-confirm-body">
+                <div class="purchase-item-info">
+                    <div class="purchase-icon">🎁</div>
+                    <div class="purchase-details">
+                        <h3 id="purchase-item-name">Название товара</h3>
+                        <p id="purchase-item-description">Описание товара</p>
+                        <div class="purchase-price-info">
+                            <span class="price-label">Цена:</span>
+                            <span class="price-value" id="purchase-item-price">0 очков</span>
+                        </div>
+                        <div class="balance-info">
+                            <span class="balance-label">Ваш баланс:</span>
+                            <span class="balance-value" id="purchase-user-balance">0 очков</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="purchase-actions">
+                    <button class="purchase-btn confirm-purchase" onclick="confirmPurchase()">
+                        <span class="btn-icon">✓</span>
+                        Купить
+                    </button>
+                    <button class="purchase-btn cancel-purchase" onclick="hidePurchaseConfirm()">
+                        <span class="btn-icon">✕</span>
+                        Отмена
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно корзины -->
+    <div id="cart-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="hideCart()"></div>
+        <div class="modal-content cart-modal-content">
+            <div class="modal-header cart-modal-header">
+                <h2>🛒 Моя корзина</h2>
+                <button class="modal-close" onclick="hideCart()">×</button>
+            </div>
+            <div class="modal-body cart-modal-body">
+                <div class="cart-tabs">
+                    <button class="cart-tab active" onclick="showCartTab('pending')">Ожидают выдачи</button>
+                    <button class="cart-tab" onclick="showCartTab('approved')">Выданные</button>
+                    <button class="cart-tab" onclick="showCartTab('rejected')">Отклоненные</button>
+                </div>
+                
+                <div class="cart-content">
+                    <div id="cart-pending" class="cart-tab-content active">
+                        <div class="cart-items" id="cart-pending-items">
+                            <!-- Товары ожидающие выдачи -->
+                        </div>
+                    </div>
+                    
+                    <div id="cart-approved" class="cart-tab-content hidden">
+                        <div class="cart-items" id="cart-approved-items">
+                            <!-- Выданные товары -->
+                        </div>
+                    </div>
+                    
+                    <div id="cart-rejected" class="cart-tab-content hidden">
+                        <div class="cart-items" id="cart-rejected-items">
+                            <!-- Отклоненные товары -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно редактора заданий -->
+    <div id="task-editor-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="hideTaskEditor()"></div>
+        <div class="modal-content task-editor-content">
+            <div class="modal-header task-editor-header">
+                <h2>📝 Редактор заданий</h2>
+                <button class="modal-close" onclick="hideTaskEditor()">×</button>
+            </div>
+            <div class="modal-body task-editor-body">
+                <div class="task-editor-info">
+                    <p>Здесь вы можете редактировать задания для каждой клетки монополии. Клетки с призами (4, 7, 10, 13, 16, 19, 22, 25) выделены особым цветом.</p>
+                </div>
+                
+                <div class="tasks-grid" id="tasks-grid">
+                    <!-- Задания для каждой клетки будут добавлены через JavaScript -->
+                </div>
+                
+                <div class="task-editor-actions">
+                    <button class="save-all-tasks-btn" onclick="saveAllTasks()">
+                        <span class="btn-icon">💾</span>
+                        Сохранить все задания
+                    </button>
+                    <button class="reset-tasks-btn" onclick="resetAllTasks()">
+                        <span class="btn-icon">🔄</span>
+                        Сбросить к умолчанию
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно колеса удачи -->
+    <div id="wheel-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="hideWheelGame()"></div>
+        <div class="modal-content wheel-content">
+            <div class="modal-header wheel-header">
+                <h2>🎡 КОЛЕСО УДАЧИ</h2>
+                <button class="modal-close" onclick="hideWheelGame()">×</button>
+            </div>
+            <div class="modal-body wheel-body">
+                <div class="wheel-info">
+                    <p>Крутите колесо и выигрывайте очки!</p>
+                    <p class="wheel-hint">Есть шанс выиграть супер приз 200 очков! 🎯</p>
+                </div>
+                
+                <div class="wheel-container">
+                    <canvas id="wheel-canvas" width="300" height="300"></canvas>
+                    <div class="wheel-pointer">▼</div>
+                </div>
+                
+                <div class="wheel-controls">
+                    <button class="spin-btn" id="spin-btn" onclick="spinWheel()">
+                        🎡 КРУТИТЬ КОЛЕСО
+                    </button>
+                </div>
+                
+                <div class="wheel-result hidden" id="wheel-result">
+                    <div class="result-text" id="wheel-result-text"></div>
+                    <button class="continue-btn" onclick="continueAfterWheel()">Продолжить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно супер приза (викторина + змейка) -->
+    <div id="super-prize-modal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content super-prize-content">
+            <div class="modal-header super-prize-header">
+                <h2>👑 СУПЕР ПРИЗ - ФИНАЛЬНОЕ ИСПЫТАНИЕ!</h2>
+            </div>
+            <div class="modal-body super-prize-body">
+                <!-- Этап викторины -->
+                <div id="quiz-stage" class="quiz-stage">
+                    <div class="quiz-info">
+                        <h3>🧠 Ответьте на вопрос, чтобы перейти к финальной игре:</h3>
+                        <div class="quiz-stats">
+                            <span class="wrong-answers-counter">
+                                ❌ Неправильных ответов: <span id="wrong-answers-count">0</span> / 3
+                            </span>
+                        </div>
+                    </div>
+                    <div class="quiz-question" id="quiz-question">
+                        <!-- Вопрос будет добавлен через JavaScript -->
+                    </div>
+                    <div class="quiz-answers" id="quiz-answers">
+                        <!-- Варианты ответов будут добавлены через JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Этап игры змейка -->
+                <div id="snake-stage" class="snake-stage hidden">
+                    <div class="snake-info">
+                        <h3>🐍 Управляйте змейкой стрелочками! Доберитесь до длины 3!</h3>
+                        <div class="snake-controls">
+                            <p>Используйте стрелки ← ↑ → ↓ для управления</p>
+                            <p class="snake-start-hint">💡 Нажмите любую стрелку, чтобы начать игру!</p>
+                            <div class="snake-stats">
+                                <span>Длина: <span id="snake-length">1</span></span>
+                                <span>Цель: 3</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="snake-game-container">
+                        <canvas id="snake-canvas" width="400" height="400"></canvas>
+                    </div>
+                    <div class="snake-actions">
+                        <button class="restart-snake-btn" onclick="restartSnakeGame()">
+                            🔄 Начать заново
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Результат -->
+                <div id="result-stage" class="result-stage hidden">
+                    <div class="result-content" id="result-content">
+                        <!-- Результат будет добавлен через JavaScript -->
+                    </div>
+                    <div class="result-actions">
+                        <button class="close-super-prize-btn" onclick="closeSuperPrize()">
+                            ✨ Закрыть
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модал Тетрис (Клетка 10) -->
+    <div id="tetris-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="hideTetrisGame()"></div>
+        <div class="modal-content tetris-content">
+            <div class="modal-header tetris-header">
+                <h2>🧩 ТЕТРИС</h2>
+                <button class="modal-close" onclick="hideTetrisGame()">×</button>
+            </div>
+            <div class="modal-body tetris-body">
+                <div class="tetris-info">
+                    <p>Собирайте линии и зарабатывайте очки!</p>
+                    <p class="tetris-hint">🎯 Каждая линия = 25 очков. Цель: 100 очков (4 линии)</p>
+                    <div class="tetris-stats">
+                        <span>Очки: <span id="tetris-score">0</span></span>
+                        <span>Линии: <span id="tetris-lines">0</span></span>
+                        <span>Уровень: <span id="tetris-level">1</span></span>
+                    </div>
+                </div>
+                
+                <div class="tetris-container">
+                    <canvas id="tetris-canvas" width="300" height="600"></canvas>
+                    <div class="tetris-next">
+                        <h4>Следующая фигура:</h4>
+                        <canvas id="tetris-next-canvas" width="120" height="120"></canvas>
+                    </div>
+                </div>
+                
+                <div class="tetris-controls">
+                    <div class="control-info">
+                        <p>Управление: ← → ↓ для движения, ↑ для поворота</p>
+                        <p>Пробел - быстрое падение</p>
+                    </div>
+                    <div class="tetris-actions">
+                        <button class="start-tetris-btn" onclick="startTetris()">🎮 Начать игру</button>
+                        <button class="pause-tetris-btn" onclick="pauseTetris()" style="display: none;">⏸️ Пауза</button>
+                    </div>
+                </div>
+                
+                <div class="tetris-result hidden" id="tetris-result">
+                    <div class="result-text" id="tetris-result-text"></div>
+                    <button class="continue-btn" onclick="continueAfterTetris()">Продолжить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модал Крестики-нолики (Клетка 13) -->
+    <div id="tictactoe-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="hideTicTacToeGame()"></div>
+        <div class="modal-content tictactoe-content">
+            <div class="modal-header tictactoe-header">
+                <h2>⭕ КРЕСТИКИ-НОЛИКИ</h2>
+                <button class="modal-close" onclick="hideTicTacToeGame()">×</button>
+            </div>
+            <div class="modal-body tictactoe-body">
+                <div class="tictactoe-info">
+                    <p>Победите компьютер и получите 50 очков!</p>
+                    <div class="game-status" id="tictactoe-status">Ваш ход (X)</div>
+                </div>
+                
+                <div class="tictactoe-board" id="tictactoe-board">
+                    <!-- Игровое поле будет создано через JavaScript -->
+                </div>
+                
+                <!-- Кнопка "Новая игра" убрана - автоматический перезапуск при поражении -->
+                
+                <div class="tictactoe-result hidden" id="tictactoe-result">
+                    <div class="result-text" id="tictactoe-result-text"></div>
+                    <button class="continue-btn" onclick="continueAfterTicTacToe()">Продолжить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модал Сапер (Клетка 16) -->
+    <div id="minesweeper-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="hideMinesweeperGame()"></div>
+        <div class="modal-content minesweeper-content">
+            <div class="modal-header minesweeper-header">
+                <h2>💣 САПЕР</h2>
+                <button class="modal-close" onclick="hideMinesweeperGame()">×</button>
+            </div>
+            <div class="modal-body minesweeper-body">
+                <div class="minesweeper-info">
+                    <p>Найдите все мины и получите 150 очков!</p>
+                    <div class="minesweeper-stats">
+                        <span>💣 Мины: <span id="mines-count">10</span></span>
+                        <span>🚩 Флаги: <span id="flags-count">0</span></span>
+                        <span>⏱️ Время: <span id="timer">000</span></span>
+                    </div>
+                </div>
+                
+                <div class="minesweeper-board" id="minesweeper-board">
+                    <!-- Игровое поле будет создано через JavaScript -->
+                </div>
+                
+                <div class="minesweeper-actions">
+                    <button class="start-minesweeper-btn" onclick="startMinesweeper()">🎮 Новая игра</button>
+                    <div class="minesweeper-controls">
+                        <p>ЛКМ - открыть клетку</p>
+                        <p>ПКМ - поставить флаг</p>
+                    </div>
+                </div>
+                
+                <div class="minesweeper-result hidden" id="minesweeper-result">
+                    <div class="result-text" id="minesweeper-result-text"></div>
+                    <button class="continue-btn" onclick="continueAfterMinesweeper()">Продолжить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модал Кликер (Клетка 19) -->
+    <div id="clicker-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="hideClickerGame()"></div>
+        <div class="modal-content clicker-content">
+            <div class="modal-header clicker-header">
+                <h2>👆 КЛИКЕР</h2>
+                <button class="modal-close" onclick="hideClickerGame()">×</button>
+            </div>
+            <div class="modal-body clicker-body">
+                <div class="clicker-info">
+                    <p>Кликайте как можно быстрее за 10 секунд!</p>
+                    <p class="clicker-hint">Максимум 100 очков</p>
+                </div>
+                
+                <div class="clicker-stats">
+                    <div class="clicker-timer">
+                        <span>⏱️ Время: <span id="clicker-time">10</span>с</span>
+                    </div>
+                    <div class="clicker-score">
+                        <span>👆 Клики: <span id="clicker-clicks">0</span></span>
+                    </div>
+                </div>
+                
+                <div class="clicker-game-area">
+                    <button class="click-target" id="click-target" onclick="makeClick()" disabled>
+                        <span class="click-icon">👆</span>
+                        <span class="click-text">КЛИКАЙ!</span>
+                    </button>
+                </div>
+                
+                <div class="clicker-actions">
+                    <button class="start-clicker-btn" onclick="startClicker()">🎮 Начать игру</button>
+                </div>
+                
+                <div class="clicker-result hidden" id="clicker-result">
+                    <div class="result-text" id="clicker-result-text"></div>
+                    <button class="continue-btn" onclick="continueAfterClicker()">Продолжить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модал Отскакивающий шар (Клетка 22) -->
+    <div id="ball-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="hideBallGame()"></div>
+        <div class="modal-content ball-content">
+            <div class="modal-header ball-header">
+                <h2>⚽ ОТСКАКИВАЮЩИЙ ШАР</h2>
+                <button class="modal-close" onclick="hideBallGame()">×</button>
+            </div>
+            <div class="modal-body ball-body">
+                <div class="ball-info">
+                    <p>Ловите шар платформой и заставляйте его отскакивать!</p>
+                    <div class="ball-stats">
+                        <span>🎯 Отскоки: <span id="ball-bounces">0</span> / 10</span>
+                        <span>⏱️ Время: <span id="ball-timer">60</span>с</span>
+                    </div>
+                </div>
+                
+                <canvas id="ball-canvas" width="400" height="300"></canvas>
+                
+                <div class="ball-actions">
+                    <button class="start-ball-btn" onclick="startBallGame()">🎮 Начать игру</button>
+                </div>
+                
+                <div class="ball-result hidden" id="ball-result">
+                    <div class="result-text" id="ball-result-text"></div>
+                    <button class="continue-btn" onclick="continueAfterBall()">Продолжить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модал Мини-гонки (Клетка 25) -->
+    <div id="racing-modal" class="modal hidden">
+        <div class="modal-overlay" onclick="hideRacingGame()"></div>
+        <div class="modal-content racing-content">
+            <div class="modal-header racing-header">
+                <h2>🏎️ МИНИ-ГОНКИ</h2>
+                <button class="modal-close" onclick="hideRacingGame()">×</button>
+            </div>
+            <div class="modal-body racing-body">
+                <div class="racing-info">
+                    <p>Обгоните соперников и придите первым!</p>
+                    <div class="racing-stats">
+                        <span>🏁 Позиция: <span id="racing-position">-</span></span>
+                        <span>⏱️ Время: <span id="racing-time">0.0</span>с</span>
+                    </div>
+                </div>
+                
+                <div class="racing-track">
+                    <canvas id="racing-canvas" width="400" height="300"></canvas>
+                </div>
+                
+                <div class="racing-controls">
+                    <div class="control-info">
+                        <p>Управление: ← → для поворота, ↑ ↓ для скорости</p>
+                    </div>
+                    <div class="racing-actions">
+                        <button class="start-racing-btn" onclick="startRacing()">🏁 Начать гонку</button>
+                    </div>
+                </div>
+                
+                <div class="racing-result hidden" id="racing-result">
+                    <div class="result-text" id="racing-result-text"></div>
+                    <button class="continue-btn" onclick="continueAfterRacing()">Продолжить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div> <!-- Закрытие main-content -->
+
+    <script src="api.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
